@@ -20,3 +20,13 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+Route::get('/similate-queue', function(){
+    dispatch(function(){
+        sleep(5);
+        logger('job done');
+    });
+
+    return view('welcome');
+});
