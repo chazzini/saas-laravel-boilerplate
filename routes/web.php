@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,8 +21,16 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::group([
+    'prefix' => '/account',
+    'middleware' => ['auth'],
+    'as' => 'account.',
+], function () {
+    Route::get('/', [App\Http\Controllers\Account\AccountController::class, 'index'])->name('index');
+    Route::get('/profile', [App\Http\Controllers\Account\ProfileController::class, 'index'])->name('profile.index');
 
-
-;
+    Route::get('/password', [App\Http\Controllers\Account\PasswordController::class, 'index'])->name('password.index');
+    Route::post('/password', [App\Http\Controllers\Account\PasswordController::class, 'store'])->name('password.store');
+});
